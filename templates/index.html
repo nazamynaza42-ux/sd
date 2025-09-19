@@ -5,16 +5,38 @@
 </head>
 <body>
     <h1>Mini Chat</h1>
+
     <form method="POST">
         Auteur: <input type="text" name="author" required><br>
         Message: <input type="text" name="content" required><br>
         <button type="submit">Envoyer</button>
     </form>
+
     <h2>Messages:</h2>
-    <ul>
-    {% for msg in messages %}
-        <li><strong>{{ msg.author }}:</strong> {{ msg.content }}</li>
-    {% endfor %}
+    <ul id="messages">
+        {% for msg in messages %}
+            <li><strong>{{ msg.author }}:</strong> {{ msg.content }}</li>
+        {% endfor %}
     </ul>
+
+    <script>
+        function fetchMessages() {
+            fetch('/messages_json')
+            .then(response => response.json())
+            .then(data => {
+                const messagesList = document.getElementById('messages');
+                messagesList.innerHTML = '';
+                data.forEach(msg => {
+                    const li = document.createElement('li');
+                    li.innerHTML = `<strong>${msg.author}:</strong> ${msg.content}`;
+                    messagesList.appendChild(li);
+                });
+            });
+        }
+
+        // Actualiser toutes les 2 secondes
+        setInterval(fetchMessages, 2000);
+    </script>
 </body>
 </html>
+
