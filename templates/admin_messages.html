@@ -1,0 +1,27 @@
+{% extends "base.html" %}
+{% block content %}
+<h2>Gestion des Messages</h2>
+
+<table class="table table-bordered table-striped">
+    <thead class="thead-dark">
+        <tr>
+            <th>ID</th>
+            <th>User ID</th>
+            <th>Group ID</th>
+            <th>Message</th>
+            <th>Date</th>
+        </tr>
+    </thead>
+    <tbody>
+        {% for msg in messages %}
+        <tr>
+            <td>{{ msg.id }}</td>
+            <td>{{ msg.user_id }}</td>
+            <td>{{ msg.group_id }}</td>
+            <td>{{ msg.content }}</td>
+            <td>{{ msg.timestamp.strftime('%Y-%m-%d %H:%M') }}</td>
+        </tr>
+        {% endfor %}
+    </tbody>
+</table>
+{% endblock %}

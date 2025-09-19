@@ -1,0 +1,23 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <title>Admin Panel</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@4.6.2/dist/css/bootstrap.min.css">
+</head>
+<body>
+    <nav class="navbar navbar-expand-lg navbar-dark bg-dark">
+        <a class="navbar-brand" href="{{ url_for('admin_dashboard') }}">Admin Panel</a>
+        <div class="navbar-nav">
+            <a class="nav-item nav-link" href="{{ url_for('admin_dashboard') }}">Dashboard</a>
+            <a class="nav-item nav-link" href="{{ url_for('admin_groups') }}">Groups</a>
+            <a class="nav-item nav-link" href="{{ url_for('admin_messages') }}">Messages</a>
+        </div>
+    </nav>
+    <div class="container mt-4">
+        {% block content %}{% endblock %}
+    </div>
+</body>
+</html>
+
