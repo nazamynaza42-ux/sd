@@ -1,30 +1,15 @@
-from flask import Flask, render_template, request, redirect, jsonify
+from flask import Flask, render_template, redirect, url_for, request, make_response, jsonify
 from flask_admin import Admin
 from flask_admin.contrib.sqla import ModelView
-from flask_sqlalchemy import SQLAlchemy
+from models import db, User, ChatGroup, Message
+import datetime
 
 app = Flask(__name__)
 app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///chat.db'
 app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
 app.config['SECRET_KEY'] = 'supersecretkey'
 
-db = SQLAlchemy(app)
-
-# --------------------- Models ---------------------
-class User(db.Model):
-    id = db.Column(db.Integer, primary_key=True)
-    username = db.Column(db.String(80), unique=True, nullable=False)
-
-class ChatGroup(db.Model):
-    id = db.Column(db.Integer, primary_key=True)
-    name = db.Column(db.String(80), nullable=False)
-
-class Message(db.Model):
-    id = db.Column(db.Integer, primary_key=True)
-    author = db.Column(db.String(80), nullable=False)
-    content = db.Column(db.String(500), nullable=False)
-    group_id = db.Column(db.Integer, db.ForeignKey('chat_group.id'), nullable=True)
-    group = db.relationship('ChatGroup', backref=db.backref('messages', lazy=True))
+db.init_app(app)
 
 # --------------------- Flask-Admin ---------------------
 admin = Admin(app, name='Admin Panel', template_mode='bootstrap4')
@@ -32,31 +17,58 @@ admin.add_view(ModelView(User, db.session))
 admin.add_view(ModelView(ChatGroup, db.session))
 admin.add_view(ModelView(Message, db.session))
 
-# --------------------- Routes ---------------------
+# --------------------- Home page ---------------------
 @app.route("/", methods=['GET', 'POST'])
 def home():
-    if request.method == 'POST':
-        author = request.form['author']
-        content = request.form['content']
-        msg = Message(author=author, content=content)
-        db.session.add(msg)
-        db.session.commit()
-        return redirect('/')
-    
-    groups = ChatGroup.query.all()
-    messages = Message.query.order_by(Message.id.asc()).all()
-    return render_template("index.html", groups=groups, messages=messages)
+    user_id = request.cookies.get("user_id")
+    if not user_id:
+        return redirect(url_for("set_username"))
 
-@app.route("/messages_json")
+    user = User.query.get(int(user_id))
+    if request.method == "POST":
+        content = request.form['content']
+        if content.strip() != "":
+            message = Message(content=content, user_id=user.id)
+            db.session.add(message)
+            db.session.commit()
+        return redirect(url_for("home"))
+
+    messages = Message.query.order_by(Message.id.asc()).all()
+    return render_template("index.html", messages=messages, user=user)
+
+# --------------------- Set username page ---------------------
+@app.route("/set-username", methods=['GET', 'POST'])
+def set_username():
+    if request.method == "POST":
+        username = request.form['username']
+        if username.strip() == "":
+            return render_template("set_username.html", error="Pseudo requis")
+        user = User.query.filter_by(username=username).first()
+        if not user:
+            user = User(username=username)
+            db.session.add(user)
+            db.session.commit()
+
+        resp = make_response(redirect(url_for("home")))
+        # Cookie permanent 10 ans
+        resp.set_cookie("user_id", str(user.id), max_age=10*365*24*60*60)
+        return resp
+
+    return render_template("set_username.html")
+
+# --------------------- API pour auto actualisation ---------------------
+@app.route("/messages.json")
 def messages_json():
     messages = Message.query.order_by(Message.id.asc()).all()
-    messages_list = [{"author": m.author, "content": m.content} for m in messages]
-    return jsonify(messages_list)
+    return jsonify([
+        {"username": msg.user.username, "content": msg.content} for msg in messages
+    ])
 
 # --------------------- Run ---------------------
 if __name__ == "__main__":
     with app.app_context():
         db.create_all()
-    app.run(debug=True)
+    app.run(host="0.0.0.0", port=5000, debug=True)
+
 
 

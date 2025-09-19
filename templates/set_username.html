@@ -1,0 +1,16 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Choisis ton pseudo</title>
+</head>
+<body>
+    <h1>Bienvenue !</h1>
+    {% if error %}
+    <p style="color:red">{{ error }}</p>
+    {% endif %}
+    <form method="POST">
+        Pseudo: <input type="text" name="username" required>
+        <button type="submit">Entrer</button>
+    </form>
+</body>
+</html>
