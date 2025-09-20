@@ -1,0 +1,14 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>Connexion Groupe</title>
+  <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+</head>
+<body>
+  <h2>Connexion au groupe {{ group.name }}</h2>
+  <form method="POST">
+    <input type="password" name="password" placeholder="Mot de passe du groupe" required>
+    <button type="submit">Entrer</button>
+  </form>
+</body>
+</html>

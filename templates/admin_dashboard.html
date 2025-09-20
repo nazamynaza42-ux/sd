@@ -1,41 +1,39 @@
-{% extends "base.html" %}
-{% block content %}
-<h2>Dashboard</h2>
+<!DOCTYPE html>
+<html>
+<head>
+  <title>Dashboard Admin</title>
+  <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+</head>
+<body>
+  <h1>Dashboard Admin</h1>
 
-<h4>Groups</h4>
-<div class="row">
-    {% for group in groups %}
-    <div class="col-md-3">
-        <div class="card mb-3">
-            <div class="card-body">
-                <h5 class="card-title">{{ group.name }}</h5>
-                <p>Membres: {{ group.members_count }}</p>
-                <p>Créé: {{ group.created_at.strftime('%Y-%m-%d') }}</p>
-            </div>
-        </div>
-    </div>
+  <h2>Créer un groupe</h2>
+  <form method="POST" action="{{ url_for('create_group') }}">
+    <input type="text" name="name" placeholder="Nom du groupe" required>
+    <input type="password" name="password" placeholder="Mot de passe" required>
+    <input type="number" name="size" placeholder="Taille max" required>
+    <button type="submit">Créer</button>
+  </form>
+
+  <h2>Groupes existants</h2>
+  <ul>
+    {% for g in groups %}
+      <li>{{ g.name }} - <a href="{{ url_for('group_login', group_id=g.id) }}">Accéder</a></li>
     {% endfor %}
-</div>
+  </ul>
 
-<h4>Messages</h4>
-<table class="table table-bordered table-striped">
-    <thead class="thead-dark">
-        <tr>
-            <th>User ID</th>
-            <th>Group ID</th>
-            <th>Message</th>
-            <th>Date</th>
-        </tr>
-    </thead>
-    <tbody>
-        {% for msg in messages %}
-        <tr>
-            <td>{{ msg.user_id }}</td>
-            <td>{{ msg.group_id }}</td>
-            <td>{{ msg.content }}</td>
-            <td>{{ msg.timestamp.strftime('%Y-%m-%d %H:%M') }}</td>
-        </tr>
-        {% endfor %}
-    </tbody>
-</table>
-{% endblock %}
+  <h2>Créer un enseignant</h2>
+  <form method="POST" action="{{ url_for('create_teacher') }}">
+    <input type="text" name="name" placeholder="Nom enseignant" required>
+    <input type="password" name="password" placeholder="Mot de passe" required>
+    <button type="submit">Créer</button>
+  </form>
+
+  <h2>Enseignants existants</h2>
+  <ul>
+    {% for t in teachers %}
+      <li>{{ t.name }} - <a href="{{ url_for('teacher_login', teacher_id=t.id) }}">Accéder</a></li>
+    {% endfor %}
+  </ul>
+</body>
+</html>

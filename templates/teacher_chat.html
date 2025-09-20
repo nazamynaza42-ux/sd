@@ -1,0 +1,27 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <title>Chat Professeur</title>
+</head>
+<body>
+    <h1>Chat du groupe : {{ group.name }}</h1>
+
+    <h2>Messages :</h2>
+    <ul>
+        {% for msg in messages %}
+            <li><b>{{ msg.author }}:</b> {{ msg.content }}</li>
+        {% else %}
+            <li>Aucun message pour le moment.</li>
+        {% endfor %}
+    </ul>
+
+    <form method="post" action="/teacher_chat/{{ group.id }}">
+        <input type="text" name="message" placeholder="Écris ton message ici">
+        <button type="submit">Envoyer</button>
+    </form>
+
+    <p><a href="/">Retour à l’accueil</a></p>
+</body>
+</html>
+

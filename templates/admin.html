@@ -1,0 +1,44 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Administration</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+</head>
+<body>
+<header>
+    <h1>🔑 Panneau d'Administration</h1>
+</header>
+<div class="container">
+    <h2>Créer un groupe</h2>
+    <form method="POST">
+        <input type="text" name="group_name" placeholder="Nom du groupe" required>
+        <input type="password" name="group_password" placeholder="Mot de passe" required>
+        <input type="number" name="group_size" placeholder="Taille max" required>
+        <button type="submit">Créer</button>
+    </form>
+
+    <h2>Créer un groupe enseignant</h2>
+    <form method="POST">
+        <input type="text" name="teacher_name" placeholder="Nom du groupe enseignant" required>
+        <input type="password" name="teacher_password" placeholder="Mot de passe" required>
+        <button type="submit">Créer</button>
+    </form>
+
+    <h2>Liste des Groupes</h2>
+    <ul>
+        {% for g in groups %}
+            <li>{{ g.name }} ({{ g.size }} places)</li>
+        {% endfor %}
+    </ul>
+
+    <h2>Liste des Groupes Enseignants</h2>
+    <ul>
+        {% for g in teachers %}
+            <li>{{ g.name }}</li>
+        {% endfor %}
+    </ul>
+</div>
+</body>
+</html>
+
+

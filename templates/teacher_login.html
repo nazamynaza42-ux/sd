@@ -1,0 +1,14 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>Connexion Enseignant</title>
+  <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+</head>
+<body>
+  <h2>Connexion enseignant {{ teacher.name }}</h2>
+  <form method="POST">
+    <input type="password" name="password" placeholder="Mot de passe enseignant" required>
+    <button type="submit">Entrer</button>
+  </form>
+</body>
+</html>

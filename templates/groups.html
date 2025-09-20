@@ -1,0 +1,24 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Groupes</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+</head>
+<body>
+<header>
+    <h1>Groupes</h1>
+</header>
+<div class="container">
+    <h2>Liste des groupes</h2>
+    <form method="POST">
+        <select name="group_id">
+            {% for g in groups %}
+                <option value="{{ g.id }}">{{ g.name }} ({{ g.size }} places)</option>
+            {% endfor %}
+        </select>
+        <input type="password" name="password" placeholder="Mot de passe" required>
+        <button type="submit">Entrer</button>
+    </form>
+</div>
+</body>
+</html>

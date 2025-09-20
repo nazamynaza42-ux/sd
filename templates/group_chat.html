@@ -1,0 +1,24 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Chat Groupe {{ group.name }}</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+</head>
+<body>
+<header>
+    <h1>Chat du Groupe : {{ group.name }}</h1>
+</header>
+<div class="container">
+    <form method="POST">
+        <input type="text" name="message" placeholder="Écris ton message..." required>
+        <button type="submit">Envoyer</button>
+    </form>
+    <h2>Messages :</h2>
+    {% for msg in messages %}
+        <div class="message">{{ msg.content }}</div>
+    {% endfor %}
+</div>
+</body>
+</html>
+
+
