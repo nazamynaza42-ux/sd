@@ -68,7 +68,7 @@ def public_chat():
 
     if request.method == "POST":
         content = request.form["message"]
-        new_message = Message(content=content, sender=session["username"], group_id=None)  # pas de groupe
+        new_message = Message(content=content, username=session["username"], group_id=None)  # pas de groupe
         db.session.add(new_message)
         db.session.commit()
         return redirect(url_for("public_chat"))
