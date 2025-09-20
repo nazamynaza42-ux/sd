@@ -1,0 +1,15 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Inscription</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+</head>
+<body>
+    <h2>Choisis un pseudo pour entrer</h2>
+    <form method="POST">
+        <input type="text" name="username" placeholder="Ton pseudo" required>
+        <button type="submit">Entrer</button>
+    </form>
+</body>
+</html>
+

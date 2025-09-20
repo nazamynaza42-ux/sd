@@ -1,22 +1,30 @@
 <!DOCTYPE html>
-<html>
+<html lang="fr">
 <head>
+    <meta charset="UTF-8">
     <title>Chat Public</title>
     <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+    <meta http-equiv="refresh" content="5"> <!-- auto refresh toutes les 5s -->
 </head>
 <body>
-<header>
     <h1>Chat Public</h1>
-</header>
-<div class="container">
+    <p>Connecté en tant que <b>{{ username }}</b></p>
+
+    <div class="chat-box">
+        {% for msg in messages %}
+            <p><b>{{ msg.sender }} :</b> {{ msg.content }}</p>
+        {% else %}
+            <p>Aucun message pour l’instant.</p>
+        {% endfor %}
+    </div>
+
     <form method="POST">
         <input type="text" name="message" placeholder="Écris ton message..." required>
         <button type="submit">Envoyer</button>
     </form>
-    <h2>Messages :</h2>
-    {% for msg in messages %}
-        <div class="message">{{ msg.content }}</div>
-    {% endfor %}
-</div>
+
+    <a href="{{ url_for('index') }}">⬅ Retour</a>
 </body>
 </html>
+
+

@@ -24,4 +24,26 @@
     <p><a href="/">Retour à l’accueil</a></p>
 </body>
 </html>
+<script>
+function loadMessages() {
+    fetch("/messages/{{ group.id }}")
+        .then(response => response.json())
+        .then(data => {
+            let chatBox = document.getElementById("chat-box");
+            chatBox.innerHTML = "";
+            data.forEach(msg => {
+                let div = document.createElement("div");
+                div.innerHTML = `<b>${msg.user}</b> [${msg.time}]: ${msg.content}`;
+                chatBox.appendChild(div);
+            });
+        });
+}
+
+// recharge toutes les 2 secondes
+setInterval(loadMessages, 2000);
+
+// charger au démarrage
+loadMessages();
+</script>
+
 
