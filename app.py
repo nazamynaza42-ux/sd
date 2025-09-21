@@ -42,6 +42,7 @@ with app.app_context():
 
 # ------------------ ROUTES ------------------
 
+# ----------- REGISTER / ACCUEIL -----------
 @app.route("/", methods=["GET", "POST"])
 def register():
     if request.method == "POST":
@@ -61,6 +62,7 @@ def index():
         return redirect(url_for("register"))
     return render_template("index.html", username=session["username"])
 
+# ----------- PUBLIC CHAT -----------
 @app.route("/public_chat", methods=["GET", "POST"])
 def public_chat():
     if "username" not in session:
@@ -68,21 +70,33 @@ def public_chat():
 
     if request.method == "POST":
         content = request.form["message"]
-        new_message = Message(content=content, username=session["username"], group_id=None)  # pas de groupe
+        new_message = Message(content=content, username=session["username"], group_id=None, teacher_group_id=None)
         db.session.add(new_message)
         db.session.commit()
         return redirect(url_for("public_chat"))
 
-    messages = Message.query.filter_by(group_id=None).all()
+    messages = Message.query.filter_by(group_id=None, teacher_group_id=None).all()
     return render_template("public_chat.html", messages=messages, username=session["username"])
-
-
 
 # ----------- GROUPS -----------
 @app.route("/groups")
 def groups():
     groups = Group.query.all()
     return render_template("groups.html", groups=groups)
+
+@app.route("/groups/create", methods=["GET", "POST"])
+def create_group():
+    if request.method == "POST":
+        name = request.form["name"]
+        password = request.form["password"]
+        size = request.form.get("size", 10)
+
+        group = Group(name=name, password=password, size=size)
+        db.session.add(group)
+        db.session.commit()
+        return redirect(url_for("groups"))
+
+    return render_template("create_group.html")
 
 @app.route("/groups/<int:group_id>", methods=["GET", "POST"])
 def group_chat(group_id):
@@ -105,6 +119,20 @@ def get_messages(group_id):
 def teachers():
     groups = TeacherGroup.query.all()
     return render_template("teachers.html", groups=groups)
+
+@app.route("/teachers/create", methods=["GET", "POST"])
+def create_teacher_group():
+    if request.method == "POST":
+        name = request.form["name"]
+        password = request.form["password"]
+        size = request.form.get("size", 10)
+
+        group = TeacherGroup(name=name, password=password, size=size)
+        db.session.add(group)
+        db.session.commit()
+        return redirect(url_for("teachers"))
+
+    return render_template("create_teacher_group.html")
 
 @app.route("/teachers/<int:group_id>", methods=["GET", "POST"])
 def teacher_chat(group_id):
@@ -131,6 +159,7 @@ def admin():
 
 if __name__ == "__main__":
     app.run(debug=True)
+
 
 
 
